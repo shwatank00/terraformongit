@@ -1,6 +1,6 @@
 module "rg" {
-    source = "../../modules/resource group/main.tf"
+    source = "../../modules/resource_group/main.tf"
     rg_name = "shwatank1-rg"
-    rg_location = "Central india"
+    location = "Central india"
 
 }g
