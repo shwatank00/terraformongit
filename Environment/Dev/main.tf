@@ -3,4 +3,4 @@ module "rg" {
     rg_name = "shwatank1-rg"
     location = "Central india"
 
-}g
+}
