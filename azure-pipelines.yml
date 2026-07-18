@@ -1,0 +1,58 @@
+trigger:
+- main
+
+stages:
+- stage: Build
+  displayName: "Terraform Build Stage"
+  pool:
+    name: Default
+
+  jobs:
+  - job: TerraformBuild
+    displayName: "Terraform Plan Job"
+    steps:
+    - task: TerraformTask@5
+      displayName: "TF Init"
+      inputs:
+        provider: 'azurerm'
+        command: 'init'
+        backendServiceArm: 'Azure subscription 1(b4212e49-0fe7-42ae-b910-c899fd642e41)'
+        backendAzureRmResourceGroupName: 'shwatank001-rg'
+        backendAzureRmStorageAccountName: 'backendshwatank'
+        backendAzureRmContainerName: 'backend-prod'
+        backendAzureRmKey: 'dev.tfstate'
+
+    - task: TerraformTask@5
+      displayName: "TF Validate"
+      inputs:
+        provider: 'azurerm'
+        command: 'validate'
+
+    - task: TerraformTask@5
+      displayName: "TF Format"
+      inputs:
+        provider: 'azurerm'
+        command: 'fmt'
+
+    - task: TerraformTask@5
+      displayName: "TF Plan"
+      inputs:
+        provider: 'azurerm'
+        command: 'plan'
+        environmentServiceNameAzureRM: 'Azure subscription 1(b4212e49-0fe7-42ae-b910-c899fd642e41)'
+
+    - task: ArchiveFiles@2
+      displayName: "Archive files"
+      inputs:
+        rootFolderOrFile: '$(Build.BinariesDirectory)'
+        includeRootFolder: true
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+        replaceExistingArchive: true
+
+    - task: PublishBuildArtifacts@1
+      displayName: "Publish Build Artifacts"
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: '$(Build.BuildID)-TFbuild'
+        publishLocation: 'Container'
