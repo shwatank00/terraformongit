@@ -33,6 +33,7 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'plan'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/infra/terraform'
         environmentServiceNameAzureRM: 'Azure subscription 1(b4212e49-0fe7-42ae-b910-c899fd642e41)'
 
     - task: ArchiveFiles@2
