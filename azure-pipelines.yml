@@ -5,36 +5,39 @@ stages:
 - stage: Build
   displayName: "Terraform Build Stage"
   pool:
-    name: Default
+    name: Terraform_automation_Pool
 
   jobs:
   - job: TerraformBuild
     displayName: "Terraform Plan Job"
     steps:
+    - checkout: self
 
-    - task: TerraformInstaller@1
-      inputs:
-        terraformVersion: 'latest'
-
-    
     - task: TerraformTask@5
       displayName: "TF Init"
       inputs:
         provider: 'azurerm'
         command: 'init'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/infra/terraform'
         backendServiceArm: 'Azure subscription 1(b4212e49-0fe7-42ae-b910-c899fd642e41)'
         backendAzureRmResourceGroupName: 'shwatank001-rg'
         backendAzureRmStorageAccountName: 'backendshwatank'
         backendAzureRmContainerName: 'backend-prod'
         backendAzureRmKey: 'dev.tfstate'
 
-    
-
     - task: TerraformTask@5
       displayName: "TF Validate"
       inputs:
         provider: 'azurerm'
         command: 'validate'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/infra/terraform'
+
+    - task: TerraformTask@5
+      displayName: "TF Format"
+      inputs:
+        provider: 'azurerm'
+        command: 'fmt'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/infra/terraform'
 
     - task: TerraformTask@5
       displayName: "TF Plan"
