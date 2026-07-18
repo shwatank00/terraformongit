@@ -18,7 +18,6 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'init'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/infra/terraform'
         backendServiceArm: 'Azure subscription 1(b4212e49-0fe7-42ae-b910-c899fd642e41)'
         backendAzureRmResourceGroupName: 'shwatank001-rg'
         backendAzureRmStorageAccountName: 'backendshwatank'
@@ -30,7 +29,6 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'validate'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/infra/terraform'
 
 
     - task: TerraformTask@5
@@ -38,7 +36,7 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'plan'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/infra/terraform'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/Environment/Dev'
         environmentServiceNameAzureRM: 'Azure subscription 1(b4212e49-0fe7-42ae-b910-c899fd642e41)'
 
     - task: ArchiveFiles@2
