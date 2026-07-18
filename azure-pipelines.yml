@@ -29,12 +29,6 @@ stages:
         command: 'validate'
 
     - task: TerraformTask@5
-      displayName: "TF Format"
-      inputs:
-        provider: 'azurerm'
-        command: 'fmt'
-
-    - task: TerraformTask@5
       displayName: "TF Plan"
       inputs:
         provider: 'azurerm'
