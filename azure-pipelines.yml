@@ -1,19 +1,58 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
 trigger:
 - main
 
-pool:
-  vmImage: Terraform_automation_Pool
+stages:
+- stage: Build
+  displayName: "Terraform Build Stage"
+  pool:
+    name: Default
 
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+  jobs:
+  - job: TerraformBuild
+    displayName: "Terraform Plan Job"
+    steps:
+    - task: TerraformTask@5
+      displayName: "TF Init"
+      inputs:
+        provider: 'azurerm'
+        command: 'init'
+        backendServiceArm: 'Azure subscription 1(b4212e49-0fe7-42ae-b910-c899fd642e41)'
+        backendAzureRmResourceGroupName: 'shwatank001-rg'
+        backendAzureRmStorageAccountName: 'backendshwatank'
+        backendAzureRmContainerName: 'backend-prod'
+        backendAzureRmKey: 'dev.tfstate'
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+    - task: TerraformTask@5
+      displayName: "TF Validate"
+      inputs:
+        provider: 'azurerm'
+        command: 'validate'
+
+    - task: TerraformTask@5
+      displayName: "TF Format"
+      inputs:
+        provider: 'azurerm'
+        command: 'fmt'
+
+    - task: TerraformTask@5
+      displayName: "TF Plan"
+      inputs:
+        provider: 'azurerm'
+        command: 'plan'
+        environmentServiceNameAzureRM: 'Azure subscription 1(b4212e49-0fe7-42ae-b910-c899fd642e41)'
+
+    - task: ArchiveFiles@2
+      displayName: "Archive files"
+      inputs:
+        rootFolderOrFile: '$(Build.BinariesDirectory)'
+        includeRootFolder: true
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+        replaceExistingArchive: true
+
+    - task: PublishBuildArtifacts@1
+      displayName: "Publish Build Artifacts"
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: '$(Build.BuildID)-TFbuild'
+        publishLocation: 'Container'
