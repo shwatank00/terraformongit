@@ -11,6 +11,12 @@ stages:
   - job: TerraformBuild
     displayName: "Terraform Plan Job"
     steps:
+
+    - task: TerraformInstaller@1
+      inputs:
+        terraformVersion: 'latest'
+
+    
     - task: TerraformTask@5
       displayName: "TF Init"
       inputs:
@@ -21,6 +27,8 @@ stages:
         backendAzureRmStorageAccountName: 'backendshwatank'
         backendAzureRmContainerName: 'backend-prod'
         backendAzureRmKey: 'dev.tfstate'
+
+    
 
     - task: TerraformTask@5
       displayName: "TF Validate"
