@@ -13,6 +13,10 @@ stages:
     steps:
     - checkout: self
 
+    - task: TerraformInstaller@1
+      inputs:
+        terraformVersion: 'latest'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/Environment/Dev'
     - task: TerraformTask@5
       displayName: "TF Init"
       inputs:
@@ -23,12 +27,14 @@ stages:
         backendAzureRmStorageAccountName: 'backendshwatank'
         backendAzureRmContainerName: 'backend-prod'
         backendAzureRmKey: 'dev.tfstate'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/Environment/Dev'
 
     - task: TerraformTask@5
       displayName: "TF Validate"
       inputs:
         provider: 'azurerm'
         command: 'validate'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/Environment/Dev'
 
 
     - task: TerraformTask@5
