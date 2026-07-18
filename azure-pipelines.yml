@@ -5,7 +5,7 @@ stages:
 - stage: Build
   displayName: "Terraform Build Stage"
   pool:
-    name: Terraform_automation_Pool
+    name: Default
 
   jobs:
   - job: TerraformBuild
