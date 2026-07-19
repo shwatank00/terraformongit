@@ -65,3 +65,10 @@ stages:
   displayName: "Terraform Deployment Stage"
   pool:
     name: Default
+
+  jobs:
+  - job: TerraformDeployment
+    displayName: "Terraform Deployment Job"
+    steps:
+    - checkout: self
+    
