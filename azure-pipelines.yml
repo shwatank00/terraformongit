@@ -60,3 +60,8 @@ stages:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)'
         ArtifactName: '$(Build.BuildID)-TFbuild'
         publishLocation: 'Container'
+
+- stage: Deployment
+  displayName: "Terraform Deployment Stage"
+  pool:
+    name: Default
